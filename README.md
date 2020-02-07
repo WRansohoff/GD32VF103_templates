@@ -4,11 +4,11 @@ This is my first try at writing a minimal bare-metal program for the GD32VF103CB
 
 It is written for a "Longan Nano" board, which you can buy from Seeed Studios for a little less than $5 each at the time of writing:
 
-    https://www.seeedstudio.com/Sipeed-Longan-Nano-RISC-V-GD32VF103CBT6-Development-Board-p-4205.html
+[Seeed Studio's Longan Nano Page](https://www.seeedstudio.com/Sipeed-Longan-Nano-RISC-V-GD32VF103CBT6-Development-Board-p-4205.html)
 
 These boards include a common-anode RGB LED, with the cathodes connected to pins `C13` (Red), `A1` (Green), and `A2` (Blue). Since the pins are connected to the cathodes instead of the anodes, writing a `0` turns an LED on and writing a `1` turns it off. You can find more information about how the board is wired in its schematic:
 
-    http://dl.sipeed.com/LONGAN/Nano/HDK/Longan%20Nano%202663/Longan%20nano%202663(Schematic).pdf
+[Longan Nano Schematics](http://dl.sipeed.com/LONGAN/Nano/HDK/Longan%20Nano%202663/Longan%20nano%202663(Schematic).pdf)
 
 # Compiler Toolchain
 
@@ -16,7 +16,7 @@ The GD32VF1 family of chips have a 32-bit RISC-V CPU core with integer multiplic
 
 So to build this project, you'll need to build an appropriate GCC toolchain. You can use the RISC-V GCC port configured for an `rv32im` architecture:
 
-    https://github.com/riscv/riscv-gnu-toolchain
+[RISC-V GNU toolchain](https://github.com/riscv/riscv-gnu-toolchain)
 
 A basic set of build commands would look something like this:
 
@@ -41,11 +41,11 @@ I think that I might be missing startup code to set up the `ECLIC` interrupt sys
 
 Some configuration files, such as the OpenOCD files and the RISC-V equivalent of CMSIS headers, are from the GD32VF103 Firmware Library which you can find here:
 
-    https://github.com/riscv-mcu/GD32VF103_Firmware_Library
+[GD32VF103 Firmware Library](https://github.com/riscv-mcu/GD32VF103_Firmware_Library)
 
 You can run `openocd -f openocd/openocd_ft2232.cfg` to open a debugging connection using the "Sipeed" USB/JTAG dongles which Seeed Studio sells alongside these boards, but I had to comment out the `ftdi_device_desc` setting to get OpenOCD to recognize mine. You'll also need to use a patched version of OpenOCD which can connect to and flash GD32VF103 chips:
 
-    https://github.com/riscv-mcu/riscv-openocd
+[GD32VF103-compatible RISC-V OpenOCD Fork](https://github.com/riscv-mcu/riscv-openocd)
 
 The `gd32vf103xb_vector_table.S` contains the interrupt vector table, which appears to work similarly to those found in ARM Cortex-M cores. Although, it looks the first entry is supposed to be a "Jump" assembly instruction instead of a memory address to start from.
 
