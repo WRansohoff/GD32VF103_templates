@@ -11,6 +11,14 @@
 __attribute__( ( naked ) ) void reset_handler( void ) {
   // Disable interrupts until they are needed.
   clear_csr( mstatus, MSTATUS_MIE );
+  // Move from 0x00000000 to 0x08000000 address space if necessary.
+  __asm__( "la   a2, in_address_space\n\t"
+           "li   a3, 1\n\t"
+           "slli a3, a3, 27\n\t"
+           "bleu a3, a2, in_address_space\n\t"
+           "add  a2, a2, a3\n\t"
+           "jr a2\n\t"
+           "in_address_space:" );
   // Set the stack pointer.
   __asm__( "la sp, _sp" );
   // Call main(0, 0) in case 'argc' and 'argv' are present.
