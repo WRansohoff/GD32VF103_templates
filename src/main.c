@@ -11,12 +11,8 @@
 __attribute__( ( naked ) ) void reset_handler( void ) {
   // Disable interrupts until they are needed.
   clear_csr( mstatus, MSTATUS_MIE );
-  // Set the global and stack pointers.
-  __asm__( ".option push\n\t"
-           ".option norelax\n\t"
-           "la gp, __global_pointer$\n\t"
-           ".option pop\n\t"
-           "la sp, _sp" );
+  // Set the stack pointer.
+  __asm__( "la sp, _sp" );
   // Call main(0, 0) in case 'argc' and 'argv' are present.
   __asm__( "li a0, 0\n\t"
            "li a1, 0\n\t"
