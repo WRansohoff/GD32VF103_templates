@@ -1,7 +1,5 @@
 OUTPUT_ARCH( "riscv" )
-
-/*ENTRY( reset_handler )*/
-ENTRY( _start )
+ENTRY( reset_handler )
 
 MEMORY
 { 
@@ -12,7 +10,7 @@ MEMORY
 
 SECTIONS
 {
-  __stack_size = DEFINED(__stack_size) ? __stack_size : 2K;
+  __stack_size = DEFINED(__stack_size) ? __stack_size : 1K;
 
   .vector_table :
   {
@@ -22,8 +20,8 @@ SECTIONS
   .text :
   {
     *(.rodata .rodata.*)  
+    *(.srodata .srodata.*)
     *(.text .text.*)
-    *(.gnu.linkonce.t.*)
   } >FLASH
 
   . = ALIGN(4);
@@ -37,23 +35,12 @@ SECTIONS
   {
     _sdata = .;
     *(.rdata) 
-
-    *(.gnu.linkonce.r.*)
     *(.data .data.*)
-    *(.gnu.linkonce.d.*)
-    . = ALIGN(8);
     *(.sdata .sdata.*)
-    *(.gnu.linkonce.s.*)
-    . = ALIGN(8);
-    *(.srodata.cst16)
-    *(.srodata.cst8)
-    *(.srodata.cst4)
-    *(.srodata.cst2)
-    *(.srodata .srodata.*)
+    . = ALIGN(4);
     _edata = .;
   } >RAM
 
-  . = ALIGN(4);
   PROVIDE( _edata = . );
   PROVIDE( edata = . );
   PROVIDE( _fbss = . );
@@ -63,9 +50,7 @@ SECTIONS
   {
     _sbss = .;
     *(.sbss*)
-    *(.gnu.linkonce.sb.*)
     *(.bss .bss.*)
-    *(.gnu.linkonce.b.*)
     *(COMMON)
     . = ALIGN(4);
     _ebss = .;
