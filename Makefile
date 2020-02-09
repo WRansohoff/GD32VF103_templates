@@ -38,8 +38,9 @@ LFLAGS += -mcmodel=medlow
 LFLAGS += -T./gd32vf103xb.ld
 
 # Source files.
-AS_SRC  = ./src/gd32vf103xb_vector_table.S
+AS_SRC  = ./src/gd32vf103xb_boot.S
 C_SRC   = ./src/main.c
+C_SRC  += ./device_headers/n200_func.c
 
 # Header file directories.
 INCLUDE = -I./device_headers
