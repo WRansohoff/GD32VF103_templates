@@ -3,6 +3,12 @@
  * Written to be as compatible as possible with STM32F1 code.
  * These definitions are incomplete and application-specific.
  */
+#include <stdint.h>
+
+/**
+ * Compatibility definitions and RISC-V specific values.
+ */
+extern volatile uint32_t SystemCoreClock;
 
 /**
  * RCC / RCU peripheral struct.
