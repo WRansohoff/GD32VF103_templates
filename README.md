@@ -25,19 +25,21 @@ git clone --recursive https://github.com/riscv/riscv-gnu-toolchain
 cd riscv-gnu-toolchain
 mkdir build
 cd build
-../configure --with-arch=rv32im --with-prefix=[install directory]
+../configure --with-arch=rv32im --prefix=[install directory]
 make
 ```
 
 You might need to install a few dependencies such as the `bison`, `flex`, and `texinfo` packages. If you're missing any, the `make` or `configure` commands will print out errors telling you what to install.
 
-Also, the `--with-prefix` argument is optional; it lets you specity an install directory, like `/opt/riscv-gcc` or `/home/user/riscv-gcc`. This makes it easier to uninstall later, but it also means that you'll need to add `[install directory]/bin` to your `PATH` environment variable in order to run programs like `riscv32-unknown-elf-gcc`.
+Also, the `--prefix` argument is optional; it lets you specity an install directory, like `/opt/riscv-gcc` or `/home/user/riscv-gcc`. This makes it easier to uninstall later, but it also means that you'll need to add `[install directory]/bin` to your `PATH` environment variable in order to run programs like `riscv32-unknown-elf-gcc`.
 
 Finally, this build process will probably take a little bit of time, and it requires a little more than 10GB of free disk space. The `make` command will both build and install the toolchain, so depending on where you want to install it, you might be prompted to run `sudo make`. Once everything is done, you might need to run `sudo ldconfig` or restart your machine before you can run the installed programs normally, but you should be able to delete the build files under your `riscv-gnu-toolchain/build` directory if you need to free up disk space afterwards.
 
 # Project Organization
 
-I think that I might be missing startup code to set up the `ECLIC` interrupt system, but I'm hoping to figure that out by setting up a millisecond 'tick' interrupt to generate the delays between LED toggles.
+The `gd32vf103xb_boot.S` file contains the interrupt vector table and the `reset_handler` assembly function. I've been trying to put all of my code into `.c` files lately, but the `CLIC` interrupt system which these chips use seems to be slightly non-standard. So while the `csrw CSR_MTVT a0` assembly command is valid, the `__asm__( "csrw CSR_MTVT a0" );` line of C code causes an 'unrecognized CSR' compiler error. Weird.
+
+The `device_headers/gd32vf103.h` file is hand-written with a few peripheral memory definitions taken from the GD32VF1 reference manual, but it is not comprehensive. I named the definitions to match those found in STM32F1 device header files; the peripherals are very similar, so I'm hoping to start putting together a header file which allows identical driver code to be used for STM32F103 and GD32VF103 chips wherever possible.
 
 Some configuration files, such as the OpenOCD files and the RISC-V equivalent of CMSIS headers, are from the GD32VF103 Firmware Library which you can find here:
 
@@ -47,8 +49,10 @@ You can run `openocd -f openocd/openocd_ft2232.cfg` to open a debugging connecti
 
 [GD32VF103-compatible RISC-V OpenOCD Fork](https://github.com/riscv-mcu/riscv-openocd)
 
-The `gd32vf103xb_vector_table.S` contains the interrupt vector table, which appears to work similarly to those found in ARM Cortex-M cores. Although, it looks the first entry is supposed to be a "Jump" assembly instruction instead of a memory address to start from.
+# Interrupts
 
-The actual `reset_handler` function is located in the `src/main.c` file, and it sets up initial register values such as the stack pointer. I've started trying to avoid hand-written assembly files as much as I can, because I think it makes the startup code a little bit easier to read.
+The `GD32VF103` has two options for handling interrupts: "vectored" and "non-vectored". The "vectored" option looks up an interrupt's memory address in the vector table and jumps directly to it, while the "non-vectored" option causes all interrupts to trigger a common "trap handler" which calls the appropriate interrupt handler function.
 
-The `device_headers/gd32vf103.h` file is hand-written with a few peripheral memory definitions taken from the GD32VF1 reference manual, but it is not comprehensive. I named the definitions to match those found in STM32F1 device header files; the peripherals are very similar, so I'm hoping to start putting together a header file which allows identical driver code to be used for STM32F103 and GD32VF103 chips wherever possible.
+The standard firmware library uses the "non-vectored" option, probably because the RISC-V CPU doesn't have hardware to automatically save and restore the CPU's context when interrupts are triggered and exited.
+
+But I'm more familiar with vectored interrupts, so for this first example, I decided to use that option. The `__attribute__( ( interrupt ) )` function annotation causes the compiler to automatically add logic which saves and restores the CPU context, but you have to add even more logic if you want higher-priority interrupts to be able to pre-empt lower-priority ones. See the "Vector processing mode" section of the ["Bumblebee core datasheet"](http://dl.sipeed.com/LONGAN/Nano/DOC/Bumblebee%20core%20datasheet_en.pdf) for more information - it's section 5.13.2 in the version that I'm looking at.
