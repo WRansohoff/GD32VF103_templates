@@ -4,41 +4,24 @@
 
 // Device header files.
 #include "gd32vf103.h"
+#include "n200_func.h"
 #include "riscv_encoding.h"
-
-// Pre-boot reset handler: disable interrupts, set the
-// global and stack pointers, then call the 'main' method.
-__attribute__( ( naked ) ) void reset_handler( void ) {
-  // Disable interrupts until they are needed.
-  clear_csr( mstatus, MSTATUS_MIE );
-  // Move from 0x00000000 to 0x08000000 address space if necessary.
-  __asm__( "la   a2, in_address_space\n\t"
-           "li   a3, 1\n\t"
-           "slli a3, a3, 27\n\t"
-           "bleu a3, a2, in_address_space\n\t"
-           "add  a2, a2, a3\n\t"
-           "jr a2\n\t"
-           "in_address_space:" );
-  // Set the stack pointer.
-  __asm__( "la sp, _sp" );
-  // Call main(0, 0) in case 'argc' and 'argv' are present.
-  __asm__( "li a0, 0\n\t"
-           "li a1, 0\n\t"
-           "call main" );
-}
-
-// Simple 'busy loop' delay method.
-// TODO: Use the RISC-V equivalent of the "SysTick" peripheral.
-__attribute__( ( optimize( "O0" ) ) )
-void delay_cycles( uint32_t cyc ) {
-  uint32_t d_i;
-  for ( d_i = 0; d_i < cyc; ++d_i ) {
-    __asm__( "nop" );
-  }
-}
 
 // Pre-defined memory locations for program initialization.
 extern uint32_t _sidata, _sdata, _edata, _sbss, _ebss;
+// Current system core clock speed.
+volatile uint32_t SystemCoreClock = 8000000;
+// Global 'tick' value.
+volatile uint32_t systick = 0;
+
+// Simple "millisecond delay" function.
+void delay_ms( uint32_t ms ) {
+  // Calculate the 'system tick' value to wait until.
+  uint32_t done = systick + ms;
+  // Wait until the 'systick' value ticks up enough.
+  while ( systick < done ) { __WFI(); }
+}
+
 // 'main' method which gets called from the boot code.
 int main( void ) {
   // Copy initialized data from .sidata (Flash) to .data (RAM)
@@ -65,27 +48,56 @@ int main( void ) {
                      0x1 << 2 );
   GPIOC->ODR   |=  ( 0x1 << 13 );
 
+  // Set up the global timer to generate an interrupt every ms.
+  // Figure out how many interrupts are available.
+  uint32_t max_irqn = *( volatile uint32_t * )( ECLIC_ADDR_BASE + ECLIC_INFO_OFFSET );
+  max_irqn &= ( 0x00001FFF );
+  // Initialize the 'ECLIC' interrupt controller.
+  eclic_init( max_irqn );
+  eclic_mode_enable();
+  // Set 'vector mode' so the timer interrupt uses the vector table.
+  eclic_set_vmode( 7 );
+  // Enable the timer interrupt (#7) with low priority and 'level'.
+  eclic_enable_interrupt( 7 );
+  eclic_set_irq_lvl_abs( 7, 1 );
+  eclic_set_irq_priority( 7, 1 );
+  // Set the timer's comparison value to (frequency / 1000).
+  *( volatile uint64_t * )( TIMER_CTRL_ADDR + TIMER_MTIMECMP ) = ( TIMER_FREQ / 1000 );
+  // Reset the timer value to zero.
+  *( volatile uint64_t * )( TIMER_CTRL_ADDR + TIMER_MTIME ) = 0;
+  // Re-enable interrupts globally.
+  set_csr( mstatus, MSTATUS_MIE );
+
   // Cycle the RGB LED through a pattern of colors.
-  #define DELAY_CYCLES ( 300000 )
+  #define DELAY_MS ( 1000 )
   while( 1 ) {
     // Green on (Green)
     GPIOA->ODR &= ~( 0x1 << 1 );
-    delay_cycles( DELAY_CYCLES );
+    delay_ms( DELAY_MS );
     // Red on (Yellow)
     GPIOC->ODR &= ~( 0x1 << 13 );
-    delay_cycles( DELAY_CYCLES );
+    delay_ms( DELAY_MS );
     // Blue on (White)
     GPIOA->ODR &= ~( 0x1 << 2 );
-    delay_cycles( DELAY_CYCLES );
+    delay_ms( DELAY_MS );
     // Green off (Purple)
     GPIOA->ODR |=  ( 0x1 << 1 );
-    delay_cycles( DELAY_CYCLES );
+    delay_ms( DELAY_MS );
     // Red off (Blue)
     GPIOC->ODR |=  ( 0x1 << 13 );
-    delay_cycles( DELAY_CYCLES );
+    delay_ms( DELAY_MS );
     // Blue off (Off)
     GPIOA->ODR |=  ( 0x1 << 2 );
-    delay_cycles( DELAY_CYCLES );
+    delay_ms( DELAY_MS );
   }
   return 0;
+}
+
+// System timer interrupt.
+__attribute__( ( interrupt ) )
+void eclic_mtip_handler( void ) {
+  // Increment the global 'tick' value.
+  systick++;
+  // Reset the 'mtime' value to zero.
+  *( volatile uint64_t * )( TIMER_CTRL_ADDR + TIMER_MTIME ) = 0;
 }
