@@ -35,15 +35,15 @@ LFLAGS += --specs=nosys.specs
 LFLAGS += -march=rv32imac
 LFLAGS += -mabi=ilp32
 LFLAGS += -mcmodel=medlow
-LFLAGS += -T./gd32vf103xb.ld
+LFLAGS += -T./../common/gd32vf103xb.ld
 
 # Source files.
-AS_SRC  = ./src/gd32vf103xb_boot.S
-C_SRC   = ./src/main.c
-C_SRC  += ./device_headers/n200_func.c
+AS_SRC  = ./../common/gd32vf103xb_boot.S
+C_SRC   = ./main.c
+C_SRC  += ./../common/device_headers/n200_func.c
 
 # Header file directories.
-INCLUDE = -I./device_headers
+INCLUDE = -I./../common/device_headers
 
 # Object files to build.
 OBJS  = $(AS_SRC:.S=.o)
