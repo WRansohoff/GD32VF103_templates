@@ -11,6 +11,84 @@
 extern volatile uint32_t SystemCoreClock;
 
 /**
+ * Interrupt handler enumeration.
+ */
+typedef enum IRQn {
+  CLIC_INT_RESERVED = 0,
+  CLIC_INT_SFT = 3,
+  CLIC_INT_TMR = 7,
+  CLIC_INT_BWEI = 17,
+  CLIC_INT_PMOVI = 18,
+  WWDG_IRQn = 19,
+  PVD_IRQn = 20,
+  TAMPER_IRQn = 21,
+  RTC_IRQn = 22,
+  FLASH_IRQn = 23,
+  RCC_IRQn = 24,
+  EXTI0_IRQn = 25,
+  EXTI1_IRQn = 26,
+  EXTI2_IRQn = 27,
+  EXTI3_IRQn = 28,
+  EXTI4_IRQn = 29,
+  DMA1_Channel1_IRQn = 30,
+  DMA1_Channel2_IRQn = 31,
+  DMA1_Channel3_IRQn = 32,
+  DMA1_Channel4_IRQn = 33,
+  DMA1_Channel5_IRQn = 34,
+  DMA1_Channel6_IRQn = 35,
+  DMA1_Channel7_IRQn = 36,
+  ADC1_2_IRQn = 37,
+  // These two interrupts aren't connected to the USB peripheral
+  // on GD32 chips, but names are maintained for STM32F1 compatibility.
+  USB_HP_CAN1_TX_IRQn = 38,
+  CAN1_TX_IRQn = 38,
+  USB_LP_CAN1_RX0_IRQn = 39,
+  CAN1_RX0_IRQn = 39,
+  CAN1_RX1_IRQn = 40,
+  CAN1_SCE_IRQn = 41,
+  EXTI9_5_IRQn = 42,
+  TIM1_BRK_IRQn = 43,
+  TIM1_UP_IRQn = 44,
+  TIM1_TRG_COM_IRQn = 45,
+  TIM1_CC_IRQn = 46,
+  TIM2_IRQn = 47,
+  TIM3_IRQn = 48,
+  TIM4_IRQn = 49,
+  I2C1_EV_IRQn = 50,
+  I2C1_ER_IRQn = 51,
+  I2C2_EV_IRQn = 52,
+  I2C2_ER_IRQn = 53,
+  SPI1_IRQn = 54,
+  SPI2_IRQn = 55,
+  USART1_IRQn = 56,
+  USART2_IRQn = 57,
+  USART3_IRQn = 58,
+  EXTI15_10_IRQn = 59,
+  RTC_Alarm_IRQn = 60,
+  USBWakeUp_IRQn = 61,
+  // Extra interrupts not available on STM32F1 chips:
+  // (Numbered peripherals are still 1-indexed)
+  EXMC_IRQn = 67,
+  TIM5_IRQn = 69,
+  SPI3_IRQn = 70,
+  UART4_IRQn = 71,
+  UART5_IRQn = 72,
+  TIM6_IRQn = 73,
+  TIM7_IRQn = 74,
+  DMA2_Channel1_IRQn = 75,
+  DMA2_Channel2_IRQn = 76,
+  DMA2_Channel3_IRQn = 77,
+  DMA2_Channel4_IRQn = 78,
+  DMA2_Channel5_IRQn = 79,
+  CAN2_TX_IRQn = 82,
+  CAN2_RX0_IRQn = 83,
+  CAN2_RX1_IRQn = 84,
+  CAN2_SCE_IRQn = 85,
+  USBFS_IRQn = 86,
+  ECLIC_NUM_INTERRUPTS
+} IRQn_Type;
+
+/**
  * RCC / RCU peripheral struct.
  */
 typedef struct
