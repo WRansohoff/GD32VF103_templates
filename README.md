@@ -1,14 +1,16 @@
 # GD32VF103 Bare-Metal "Hello, World"
 
-This is my first try at writing a minimal bare-metal program for the GD32VF103CB RISC-V microcontroller. These look like fun chips because their peripherals are very similar to those found on the well-understood STM32F103 workhorse, but they have a shiny new RISC-V CPU core which is 50% faster and maybe more power efficient. So while RISC-V is a fairly young architecture, there is still plenty of example code demonstrating how to work with these peripherals, which should make it easier to get started.
+This is a handful of template bare-metal programs for the GD32VF103CB RISC-V microcontroller. These look like fun chips because their peripherals are very similar to those found on the well-understood STM32F103 workhorse, but they have a shiny new RISC-V CPU core which is 50% faster and apparently more power efficient. So while RISC-V is a fairly young architecture, there is still plenty of example code demonstrating how to work with these peripherals, which should make it easier to get started.
 
-It is written for a "Longan Nano" board, which you can buy from Seeed Studios for a little less than $5 each at the time of writing:
+They are written for a "Longan Nano" board, which you can buy from Seeed Studios for a little less than $5 each at the time of writing:
 
 [Seeed Studio's Longan Nano Page](https://www.seeedstudio.com/Sipeed-Longan-Nano-RISC-V-GD32VF103CBT6-Development-Board-p-4205.html)
 
 These boards include a common-anode RGB LED, with the cathodes connected to pins `C13` (Red), `A1` (Green), and `A2` (Blue). Since the pins are connected to the cathodes instead of the anodes, writing a `0` turns an LED on and writing a `1` turns it off. You can find more information about how the board is wired in its schematic:
 
 [Longan Nano Schematics](http://dl.sipeed.com/LONGAN/Nano/HDK/Longan%20Nano%202663/Longan%20nano%202663(Schematic).pdf)
+
+They also have a 160x80-pixel `ST7735` TFT display wired to one of its `SPI` peripherals, which is a nice little extra.
 
 # Compiler Toolchain
 
@@ -37,9 +39,19 @@ Finally, this build process will probably take a little bit of time, and it requ
 
 # Project Organization
 
-The `gd32vf103xb_boot.S` file contains the interrupt vector table and the `reset_handler` assembly function. I've been trying to put all of my code into `.c` files lately, but the `CLIC` interrupt system which these chips use seems to be slightly non-standard. So while the `csrw CSR_MTVT a0` assembly command is valid, the `__asm__( "csrw CSR_MTVT a0" );` line of C code causes an 'unrecognized CSR' compiler error. Weird.
+The `common/` directory contains code that is shared by all of the projects, and the `hello_blah` directories contain the actual application code and a Makefile for each example.
 
-The `device_headers/gd32vf103.h` file is hand-written with a few peripheral memory definitions taken from the GD32VF1 reference manual, but it is not comprehensive. I named the definitions to match those found in STM32F1 device header files; the peripherals are very similar, so I'm hoping to start putting together a header file which allows identical driver code to be used for STM32F103 and GD32VF103 chips wherever possible.
+* `hello_riscv` is a minimal example to test whether your build / program / debug toolchain is working.
+
+* `hello_led` toggles the board's RGB LEDs.
+
+* `hello_systick` toggles the board's RGB LEDs every second, using the CPU's timer interrupt as a source of time.
+
+* `hello_display` configures the chip's SPI and DMA peripherals to draw to the board's display, and cycles through a few different patterns.
+
+The `common/gd32vf103xb_boot.S` file contains the interrupt vector table and the `reset_handler` assembly function. I've been trying to put all of my code into `.c` files lately, but the `CLIC` interrupt system which these chips use might not be built into the universal RISC-V toolchain yet. So while the `csrw CSR_MTVT a0` assembly command is valid, the `__asm__( "csrw CSR_MTVT a0" );` line of C code causes an 'unrecognized CSR' compiler error. Weird.
+
+The `common/device_headers/gd32vf103.h` file is hand-written with a few peripheral memory definitions taken from the GD32VF1 reference manual, but it is not comprehensive. I named the definitions to match those found in STM32F1 device header files; the peripherals are very similar, so I'm hoping to start putting together a header file which allows identical driver code to be used for STM32F103 and GD32VF103 chips wherever possible. But it might also be a little bit confusing, because the GD32 peripherals are 0-indexed while the STM32 ones are 1-indexed. So what I call `SPI1` is called `SPI0` in the GD32 reference material. Life isn't perfect.
 
 Some configuration files, such as the OpenOCD files and the RISC-V equivalent of CMSIS headers, are from the GD32VF103 Firmware Library which you can find here:
 
