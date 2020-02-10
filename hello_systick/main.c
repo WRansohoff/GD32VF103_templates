@@ -56,11 +56,11 @@ int main( void ) {
   eclic_init( max_irqn );
   eclic_mode_enable();
   // Set 'vector mode' so the timer interrupt uses the vector table.
-  eclic_set_vmode( 7 );
+  eclic_set_vmode( CLIC_INT_TMR );
   // Enable the timer interrupt (#7) with low priority and 'level'.
-  eclic_enable_interrupt( 7 );
-  eclic_set_irq_lvl_abs( 7, 1 );
-  eclic_set_irq_priority( 7, 1 );
+  eclic_enable_interrupt( CLIC_INT_TMR );
+  eclic_set_irq_lvl_abs( CLIC_INT_TMR, 1 );
+  eclic_set_irq_priority( CLIC_INT_TMR, 1 );
   // Set the timer's comparison value to (frequency / 1000).
   *( volatile uint64_t * )( TIMER_CTRL_ADDR + TIMER_MTIMECMP ) = ( TIMER_FREQ / 1000 );
   // Reset the timer value to zero.
