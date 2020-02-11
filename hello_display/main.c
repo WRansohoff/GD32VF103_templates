@@ -124,7 +124,7 @@ int main( void ) {
   // number of 16-bit colors multiplied by two.
   DMA1_Channel3->CNDTR =  ( uint32_t )( TFT_A * 2 );
 
-  // SPI1 setup: host mode, /8 baud rate division, sw cs pin control,
+  // SPI1 setup: host mode, no baud rate division, sw cs pin control,
   // TX DMA enabled, 8-bit frames, msb-first, enable the peripheral.
   // Some of those settings are the default state after a reset.
   SPI1->CR2  |=  ( SPI_CR2_TXDMAEN );
@@ -132,8 +132,7 @@ int main( void ) {
   SPI1->CR1  |=  ( SPI_CR1_SSM |
                    SPI_CR1_SSI |
                    SPI_CR1_MSTR |
-                   SPI_CR1_SPE |
-                   0x2 << SPI_CR1_BR_Pos );
+                   SPI_CR1_SPE );
 
   // Set up the global timer to generate an interrupt every ms.
   // Figure out how many interrupts are available.
