@@ -209,6 +209,8 @@ int main( void ) {
   // Set 'data' transfer mode to start sending pixel data.
   display_mode( MODE_DAT );
 
+  // Set 'LSBFIRST' mode to make it easier to set color values.
+  SPI1->CR1          |=  ( SPI_CR1_LSBFIRST );
   // Enable the circular DMA transfer.
   DMA1_Channel3->CCR |=  ( DMA_CCR_EN );
 
@@ -222,7 +224,7 @@ int main( void ) {
     // tricky to figure out. Maybe seeting `LSBFIRST` could help?
     // Red (5 most-significant bits)
     for ( uint32_t i = 0; i < TFT_A; ++i ) {
-      fb[ i ] = 0x1F00;
+      fb[ i ] = 0xF800;
     }
     GPIOA->ODR |=  ( 0x1 << 1 |
                      0x1 << 2 );
@@ -230,7 +232,7 @@ int main( void ) {
     delay_ms( PATTERN_DELAY );
     // Yellow
     for ( uint32_t i = 0; i < TFT_A; ++i ) {
-      fb[ i ] = 0xFF07;
+      fb[ i ] = 0xFFE0;
     }
     GPIOA->ODR &= ~( 0x1 << 1 );
     GPIOA->ODR |=  ( 0x1 << 2 );
@@ -238,7 +240,7 @@ int main( void ) {
     delay_ms( PATTERN_DELAY );
     // Green (6 middle bits)
     for ( uint32_t i = 0; i < TFT_A; ++i ) {
-      fb[ i ] = 0xE007;
+      fb[ i ] = 0x03E0;
     }
     GPIOA->ODR &= ~( 0x1 << 1 );
     GPIOA->ODR |=  ( 0x1 << 2 );
@@ -246,7 +248,7 @@ int main( void ) {
     delay_ms( PATTERN_DELAY );
     // Purple
     for ( uint32_t i = 0; i < TFT_A; ++i ) {
-      fb[ i ] = 0x1FF8;
+      fb[ i ] = 0xF81F;
     }
     GPIOA->ODR |=  ( 0x1 << 1 );
     GPIOA->ODR &= ~( 0x1 << 2 );
@@ -254,7 +256,7 @@ int main( void ) {
     delay_ms( PATTERN_DELAY );
     // Blue (5 least-significant bits)
     for ( uint32_t i = 0; i < TFT_A; ++i ) {
-      fb[ i ] = 0x00F8;
+      fb[ i ] = 0x001F;
     }
     GPIOA->ODR |=  ( 0x1 << 1 );
     GPIOA->ODR &= ~( 0x1 << 2 );
