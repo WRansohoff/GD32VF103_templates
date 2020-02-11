@@ -135,34 +135,164 @@ typedef struct
   volatile uint32_t MAPR2;
 } AFIO_TypeDef;
 
+/**
+ * DMA peripheral struct (global).
+ */
+typedef struct
+{
+  volatile uint32_t ISR;
+  volatile uint32_t IFCR;
+} DMA_TypeDef;
+
+/**
+ * DMA peripheral struct (per-channel).
+ */
+typedef struct
+{
+  volatile uint32_t CCR;
+  volatile uint32_t CNDTR;
+  volatile uint32_t CPAR;
+  volatile uint32_t CMAR;
+} DMA_Channel_TypeDef;
+
+/**
+ * SPI peripheral struct.
+ */
+typedef struct
+{
+  volatile uint32_t CR1;
+  volatile uint32_t CR2;
+  volatile uint32_t SR;
+  volatile uint32_t DR;
+  volatile uint32_t CRCPR;
+  volatile uint32_t RXCRCR;
+  volatile uint32_t TXCRCR;
+  volatile uint32_t I2SCFGR;
+  volatile uint32_t I2SPR;
+} SPI_TypeDef;
+
 /* Global register block address definitions. */
-#define RCC   ( ( RCC_TypeDef * )  0x40021000 )
-#define GPIOA ( ( GPIO_TypeDef * ) 0x40010800 )
-#define GPIOB ( ( GPIO_TypeDef * ) 0x40010C00 )
-#define GPIOC ( ( GPIO_TypeDef * ) 0x40011000 )
-#define GPIOD ( ( GPIO_TypeDef * ) 0x40011400 )
-#define GPIOE ( ( GPIO_TypeDef * ) 0x40011800 )
+#define RCC           ( ( RCC_TypeDef * )         0x40021000 )
+#define GPIOA         ( ( GPIO_TypeDef * )        0x40010800 )
+#define GPIOB         ( ( GPIO_TypeDef * )        0x40010C00 )
+#define GPIOC         ( ( GPIO_TypeDef * )        0x40011000 )
+#define GPIOD         ( ( GPIO_TypeDef * )        0x40011400 )
+#define GPIOE         ( ( GPIO_TypeDef * )        0x40011800 )
+#define AFIO          ( ( AFIO_TypeDef * )        0x40010000 )
+#define DMA1          ( ( DMA_TypeDef * )         0x40020000 )
+#define DMA2          ( ( DMA_TypeDef * )         0x40020400 )
+#define DMA1_Channel1 ( ( DMA_Channel_TypeDef * ) 0x40020008 )
+#define DMA1_Channel2 ( ( DMA_Channel_TypeDef * ) 0x4002001C )
+#define DMA1_Channel3 ( ( DMA_Channel_TypeDef * ) 0x40020030 )
+#define DMA1_Channel4 ( ( DMA_Channel_TypeDef * ) 0x40020044 )
+#define DMA1_Channel5 ( ( DMA_Channel_TypeDef * ) 0x40020058 )
+#define DMA1_Channel6 ( ( DMA_Channel_TypeDef * ) 0x4002006C )
+#define DMA1_Channel7 ( ( DMA_Channel_TypeDef * ) 0x40020080 )
+#define DMA2_Channel1 ( ( DMA_Channel_TypeDef * ) 0x40020408 )
+#define DMA2_Channel2 ( ( DMA_Channel_TypeDef * ) 0x4002041C )
+#define DMA2_Channel3 ( ( DMA_Channel_TypeDef * ) 0x40020430 )
+#define DMA2_Channel4 ( ( DMA_Channel_TypeDef * ) 0x40020444 )
+#define DMA2_Channel5 ( ( DMA_Channel_TypeDef * ) 0x40020458 )
+#define SPI1          ( ( SPI_TypeDef * )         0x40013000 )
+#define SPI2          ( ( SPI_TypeDef * )         0x40003800 )
+#define SPI3          ( ( SPI_TypeDef * )         0x40003C00 )
 
 /* RCC register bit definitions. */
+/* APB2RSTR */
+#define RCC_APB2RSTR_AFIORST_Pos   ( 0U )
+#define RCC_APB2RSTR_AFIORST_Msk   ( 0x1UL << RCC_APB2RSTR_AFIORST_Pos )
+#define RCC_APB2RSTR_AFIORST       ( RCC_APB2RSTR_AFIORST_Msk )
+#define RCC_APB2RSTR_IOPARST_Pos   ( 2U )
+#define RCC_APB2RSTR_IOPARST_Msk   ( 0x1UL << RCC_APB2RSTR_IOPARST_Pos )
+#define RCC_APB2RSTR_IOPARST       ( RCC_APB2RSTR_IOPARST_Msk )
+#define RCC_APB2RSTR_IOPBRST_Pos   ( 3U )
+#define RCC_APB2RSTR_IOPBRST_Msk   ( 0x1UL << RCC_APB2RSTR_IOPBRST_Pos )
+#define RCC_APB2RSTR_IOPBRST       ( RCC_APB2RSTR_IOPBRST_Msk )
+#define RCC_APB2RSTR_IOPCRST_Pos   ( 4U )
+#define RCC_APB2RSTR_IOPCRST_Msk   ( 0x1UL << RCC_APB2RSTR_IOPCRST_Pos )
+#define RCC_APB2RSTR_IOPCRST       ( RCC_APB2RSTR_IOPCRST_Msk )
+#define RCC_APB2RSTR_IOPDRST_Pos   ( 5U )
+#define RCC_APB2RSTR_IOPDRST_Msk   ( 0x1UL << RCC_APB2RSTR_IOPDRST_Pos )
+#define RCC_APB2RSTR_IOPDRST       ( RCC_APB2RSTR_IOPDRST_Msk )
+#define RCC_APB2RSTR_IOPERST_Pos   ( 6U )
+#define RCC_APB2RSTR_IOPERST_Msk   ( 0x1UL << RCC_APB2RSTR_IOPERST_Pos )
+#define RCC_APB2RSTR_IOPERST       ( RCC_APB2RSTR_IOPERST_Msk )
+#define RCC_APB2RSTR_ADC1RST_Pos   ( 9U )
+#define RCC_APB2RSTR_ADC1RST_Msk   ( 0x1UL << RCC_APB2RSTR_ADC1RST_Pos )
+#define RCC_APB2RSTR_ADC1RST       ( RCC_APB2RSTR_ADC1RST_Msk )
+#define RCC_APB2RSTR_ADC2RST_Pos   ( 10U )
+#define RCC_APB2RSTR_ADC2RST_Msk   ( 0x1UL << RCC_APB2RSTR_ADC2RST_Pos )
+#define RCC_APB2RSTR_ADC2RST       ( RCC_APB2RSTR_ADC2RST_Msk )
+#define RCC_APB2RSTR_TIM1RST_Pos   ( 11U )
+#define RCC_APB2RSTR_TIM1RST_Msk   ( 0x1UL << RCC_APB2RSTR_TIM1RST_Pos )
+#define RCC_APB2RSTR_TIM1RST       ( RCC_APB2RSTR_TIM1RST_Msk )
+#define RCC_APB2RSTR_SPI1RST_Pos   ( 12U )
+#define RCC_APB2RSTR_SPI1RST_Msk   ( 0x1UL << RCC_APB2RSTR_SPI1RST_Pos )
+#define RCC_APB2RSTR_SPI1RST       ( RCC_APB2RSTR_SPI1RST_Msk )
+#define RCC_APB2RSTR_USART1RST_Pos ( 14U )
+#define RCC_APB2RSTR_USART1RST_Msk ( 0x1UL << RCC_APB2RSTR_USART1RST_Pos )
+#define RCC_APB2RSTR_USART1RST     ( RCC_APB2RSTR_USART1RST_Msk )
+/* AHBENR */
+#define RCC_AHBENR_DMA1EN_Pos    ( 0U )
+#define RCC_AHBENR_DMA1EN_Msk    ( 0x1UL << RCC_AHBENR_DMA1EN_Pos )
+#define RCC_AHBENR_DMA1EN        ( RCC_AHBENR_DMA1EN_Msk )
+// Note: DMA2 not present on STM32F103 chips.
+#define RCC_AHBENR_DMA2EN_Pos    ( 1U )
+#define RCC_AHBENR_DMA2EN_Msk    ( 0x1UL << RCC_AHBENR_DMA2EN_Pos )
+#define RCC_AHBENR_DMA2EN        ( RCC_AHBENR_DMA2EN_Msk )
+#define RCC_AHBENR_SRAMEN_Pos    ( 2U )
+#define RCC_AHBENR_SRAMEN_Msk    ( 0x1UL << RCC_AHBENR_SRAMEN_Pos )
+#define RCC_AHBENR_SRAMEN        ( RCC_AHBENR_SRAMEN_Msk )
+#define RCC_AHBENR_FLITFEN_Pos   ( 4U )
+#define RCC_AHBENR_FLITFEN_Msk   ( 0x1UL << RCC_AHBENR_FLITFEN_Pos )
+#define RCC_AHBENR_FLITFEN       ( RCC_AHBENR_FLITFEN_Msk )
+#define RCC_AHBENR_CRCEN_Pos     ( 6U )
+#define RCC_AHBENR_CRCEN_Msk     ( 0x1UL << RCC_AHBENR_CRCENEN_Pos )
+#define RCC_AHBENR_CRCEN         ( RCC_AHBENR_CRCENEN_Msk )
+// Note: EXMC not present on STM32F103 chips.
+#define RCC_AHBENR_EXMCEN_Pos    ( 8U )
+#define RCC_AHBENR_EXMCEN_Msk    ( 0x1UL << RCC_AHBENR_EXMCEN_Pos )
+#define RCC_AHBENR_EXMCEN        ( RCC_AHBENR_EXMCEN_Msk )
+// Note: USB handled differently on STM32F103 chips.
+#define RCC_AHBENR_USBFSEN_Pos   ( 12U )
+#define RCC_AHBENR_USBFSEN_Msk   ( 0x1UL << RCC_AHBENR_USBFSEN_Pos )
+#define RCC_AHBENR_USBFSEN       ( RCC_AHBENR_USBFSEN_Msk )
 /* APB2ENR */
-#define RCC_APB2ENR_AFIOEN_Pos ( 0U )
-#define RCC_APB2ENR_AFIOEN_Msk ( 0x1UL << RCC_APB2ENR_AFIOEN_Pos )
-#define RCC_APB2ENR_AFIOEN     ( RCC_APB2ENR_AFIOEN_Msk )
-#define RCC_APB2ENR_IOPAEN_Pos ( 2U )
-#define RCC_APB2ENR_IOPAEN_Msk ( 0x1UL << RCC_APB2ENR_IOPAEN_Pos )
-#define RCC_APB2ENR_IOPAEN     ( RCC_APB2ENR_IOPAEN_Msk )
-#define RCC_APB2ENR_IOPBEN_Pos ( 3U )
-#define RCC_APB2ENR_IOPBEN_Msk ( 0x1UL << RCC_APB2ENR_IOPBEN_Pos )
-#define RCC_APB2ENR_IOPBEN     ( RCC_APB2ENR_IOPBEN_Msk )
-#define RCC_APB2ENR_IOPCEN_Pos ( 4U )
-#define RCC_APB2ENR_IOPCEN_Msk ( 0x1UL << RCC_APB2ENR_IOPCEN_Pos )
-#define RCC_APB2ENR_IOPCEN     ( RCC_APB2ENR_IOPCEN_Msk )
-#define RCC_APB2ENR_IOPDEN_Pos ( 5U )
-#define RCC_APB2ENR_IOPDEN_Msk ( 0x1UL << RCC_APB2ENR_IOPDEN_Pos )
-#define RCC_APB2ENR_IOPDEN     ( RCC_APB2ENR_IOPDEN_Msk )
-#define RCC_APB2ENR_IOPEEN_Pos ( 6U )
-#define RCC_APB2ENR_IOPEEN_Msk ( 0x1UL << RCC_APB2ENR_IOPEEN_Pos )
-#define RCC_APB2ENR_IOPEEN     ( RCC_APB2ENR_IOPEEN_Msk )
+#define RCC_APB2ENR_AFIOEN_Pos   ( 0U )
+#define RCC_APB2ENR_AFIOEN_Msk   ( 0x1UL << RCC_APB2ENR_AFIOEN_Pos )
+#define RCC_APB2ENR_AFIOEN       ( RCC_APB2ENR_AFIOEN_Msk )
+#define RCC_APB2ENR_IOPAEN_Pos   ( 2U )
+#define RCC_APB2ENR_IOPAEN_Msk   ( 0x1UL << RCC_APB2ENR_IOPAEN_Pos )
+#define RCC_APB2ENR_IOPAEN       ( RCC_APB2ENR_IOPAEN_Msk )
+#define RCC_APB2ENR_IOPBEN_Pos   ( 3U )
+#define RCC_APB2ENR_IOPBEN_Msk   ( 0x1UL << RCC_APB2ENR_IOPBEN_Pos )
+#define RCC_APB2ENR_IOPBEN       ( RCC_APB2ENR_IOPBEN_Msk )
+#define RCC_APB2ENR_IOPCEN_Pos   ( 4U )
+#define RCC_APB2ENR_IOPCEN_Msk   ( 0x1UL << RCC_APB2ENR_IOPCEN_Pos )
+#define RCC_APB2ENR_IOPCEN       ( RCC_APB2ENR_IOPCEN_Msk )
+#define RCC_APB2ENR_IOPDEN_Pos   ( 5U )
+#define RCC_APB2ENR_IOPDEN_Msk   ( 0x1UL << RCC_APB2ENR_IOPDEN_Pos )
+#define RCC_APB2ENR_IOPDEN       ( RCC_APB2ENR_IOPDEN_Msk )
+#define RCC_APB2ENR_IOPEEN_Pos   ( 6U )
+#define RCC_APB2ENR_IOPEEN_Msk   ( 0x1UL << RCC_APB2ENR_IOPEEN_Pos )
+#define RCC_APB2ENR_IOPEEN       ( RCC_APB2ENR_IOPEEN_Msk )
+#define RCC_APB2ENR_ADC1EN_Pos   ( 9U )
+#define RCC_APB2ENR_ADC1EN_Msk   ( 0x1UL << RCC_APB2ENR_ADC1EN_Pos )
+#define RCC_APB2ENR_ADC1EN       ( RCC_APB2ENR_ADC1EN_Msk )
+#define RCC_APB2ENR_ADC2EN_Pos   ( 10U )
+#define RCC_APB2ENR_ADC2EN_Msk   ( 0x1UL << RCC_APB2ENR_ADC2EN_Pos )
+#define RCC_APB2ENR_ADC2EN       ( RCC_APB2ENR_ADC2EN_Msk )
+#define RCC_APB2ENR_TIM1EN_Pos   ( 11U )
+#define RCC_APB2ENR_TIM1EN_Msk   ( 0x1UL << RCC_APB2ENR_TIM1EN_Pos )
+#define RCC_APB2ENR_TIM1EN       ( RCC_APB2ENR_TIM1EN_Msk )
+#define RCC_APB2ENR_SPI1EN_Pos   ( 12U )
+#define RCC_APB2ENR_SPI1EN_Msk   ( 0x1UL << RCC_APB2ENR_SPI1EN_Pos )
+#define RCC_APB2ENR_SPI1EN       ( RCC_APB2ENR_SPI1EN_Msk )
+#define RCC_APB2ENR_USART1EN_Pos ( 14U )
+#define RCC_APB2ENR_USART1EN_Msk ( 0x1UL << RCC_APB2ENR_USART1EN_Pos )
+#define RCC_APB2ENR_USART1EN     ( RCC_APB2ENR_USART1EN_Msk )
+
+/* AFIO register bit definitions. */
 
 /* GPIO register bit definitions. */
 /* CRL */
@@ -276,4 +406,144 @@ typedef struct
 #define GPIO_CRH_CNF15_Msk  ( 0x3UL << GPIO_CRH_CNF15_Pos )
 #define GPIO_CRH_CNF15      ( GPIO_CRH_CNF15_Msk )
 
-/* AFIO register bit definitions. */
+/* Global DMA register bit definitions. */
+
+/* Per-channel DMA register bit definitions. */
+/* CCR / CHCTL */
+#define DMA_CCR_EN_Pos      ( 0U )
+#define DMA_CCR_EN_Msk      ( 0x1UL << DMA_CCR_EN_Pos )
+#define DMA_CCR_EN          ( DMA_CCR_EN_Msk )
+#define DMA_CCR_TCIE_Pos    ( 1U )
+#define DMA_CCR_TCIE_Msk    ( 0x1UL << DMA_CCR_TCIE_Pos )
+#define DMA_CCR_TCIE        ( DMA_CCR_TCIE_Msk )
+#define DMA_CCR_HTIE_Pos    ( 2U )
+#define DMA_CCR_HTIE_Msk    ( 0x1UL << DMA_CCR_HTIE_Pos )
+#define DMA_CCR_HTIE        ( DMA_CCR_HTIE_Msk )
+#define DMA_CCR_TEIE_Pos    ( 3U )
+#define DMA_CCR_TEIE_Msk    ( 0x1UL << DMA_CCR_TEIE_Pos )
+#define DMA_CCR_TEIE        ( DMA_CCR_TEIE_Msk )
+#define DMA_CCR_DIR_Pos     ( 4U )
+#define DMA_CCR_DIR_Msk     ( 0x1UL << DMA_CCR_DIR_Pos )
+#define DMA_CCR_DIR         ( DMA_CCR_DIR_Msk )
+#define DMA_CCR_CIRC_Pos    ( 5U )
+#define DMA_CCR_CIRC_Msk    ( 0x1UL << DMA_CCR_CIRC_Pos )
+#define DMA_CCR_CIRC        ( DMA_CCR_CIRC_Msk )
+#define DMA_CCR_PINC_Pos    ( 6U )
+#define DMA_CCR_PINC_Msk    ( 0x1UL << DMA_CCR_PINC_Pos )
+#define DMA_CCR_PINC        ( DMA_CCR_PINC_Msk )
+#define DMA_CCR_MINC_Pos    ( 7U )
+#define DMA_CCR_MINC_Msk    ( 0x1UL << DMA_CCR_MINC_Pos )
+#define DMA_CCR_MINC        ( DMA_CCR_MINC_Msk )
+#define DMA_CCR_PSIZE_Pos   ( 8U )
+#define DMA_CCR_PSIZE_Msk   ( 0x3UL << DMA_CCR_PSIZE_Pos )
+#define DMA_CCR_PSIZE       ( DMA_CCR_PSIZE_Msk )
+#define DMA_CCR_MSIZE_Pos   ( 10U )
+#define DMA_CCR_MSIZE_Msk   ( 0x3UL << DMA_CCR_MSIZE_Pos )
+#define DMA_CCR_MSIZE       ( DMA_CCR_MSIZE_Msk )
+#define DMA_CCR_PL_Pos      ( 12U )
+#define DMA_CCR_PL_Msk      ( 0x3UL << DMA_CCR_PL_Pos )
+#define DMA_CCR_PL          ( DMA_CCR_PL_Msk )
+#define DMA_CCR_MEM2MEM_Pos ( 14U )
+#define DMA_CCR_MEM2MEM_Msk ( 0x1UL << DMA_CCR_MEM2MEM_Pos )
+#define DMA_CCR_MEM2MEM     ( DMA_CCR_MEM2MEM_Msk )
+
+/* SPI register bit definitions. */
+/* CR1 */
+#define SPI_CR1_CPHA_Pos     ( 0U )
+#define SPI_CR1_CPHA_Msk     ( 0x1UL << SPI_CR1_CPHA_Pos )
+#define SPI_CR1_CPHA         ( SPI_CR1_CPHA_Msk )
+#define SPI_CR1_CPOL_Pos     ( 1U )
+#define SPI_CR1_CPOL_Msk     ( 0x1UL << SPI_CR1_CPOL_Pos )
+#define SPI_CR1_CPOL         ( SPI_CR1_CPOL_Msk )
+#define SPI_CR1_MSTR_Pos     ( 2U )
+#define SPI_CR1_MSTR_Msk     ( 0x1UL << SPI_CR1_MSTR_Pos )
+#define SPI_CR1_MSTR         ( SPI_CR1_MSTR_Msk )
+#define SPI_CR1_BR_Pos       ( 3U )
+#define SPI_CR1_BR_Msk       ( 0x7UL << SPI_CR1_BR_Pos )
+#define SPI_CR1_BR           ( SPI_CR1_BR_Msk )
+#define SPI_CR1_SPE_Pos      ( 6U )
+#define SPI_CR1_SPE_Msk      ( 0x1UL << SPI_CR1_SPE_Pos )
+#define SPI_CR1_SPE          ( SPI_CR1_SPE_Msk )
+#define SPI_CR1_LSBFIRST_Pos ( 7U )
+#define SPI_CR1_LSBFIRST_Msk ( 0x1UL << SPI_CR1_LSBFIRST_Pos )
+#define SPI_CR1_LSBFIRST     ( SPI_CR1_LSBFIRST_Msk )
+#define SPI_CR1_SSI_Pos      ( 8U )
+#define SPI_CR1_SSI_Msk      ( 0x1UL << SPI_CR1_SSI_Pos )
+#define SPI_CR1_SSI          ( SPI_CR1_SSI_Msk )
+#define SPI_CR1_SSM_Pos      ( 9U )
+#define SPI_CR1_SSM_Msk      ( 0x1UL << SPI_CR1_SSM_Pos )
+#define SPI_CR1_SSM          ( SPI_CR1_SSM_Msk )
+#define SPI_CR1_RXONLY_Pos   ( 10U )
+#define SPI_CR1_RXONLY_Msk   ( 0x1UL << SPI_CR1_RXONLY_Pos )
+#define SPI_CR1_RXONLY       ( SPI_CR1_RXONLY_Msk )
+#define SPI_CR1_DFF_Pos      ( 11U )
+#define SPI_CR1_DFF_Msk      ( 0x1UL << SPI_CR1_DFF_Pos )
+#define SPI_CR1_DFF          ( SPI_CR1_DFF_Msk )
+#define SPI_CR1_CRCNEXT_Pos  ( 12U )
+#define SPI_CR1_CRCNEXT_Msk  ( 0x1UL << SPI_CR1_CRCNEXT_Pos )
+#define SPI_CR1_CRCNEXT      ( SPI_CR1_CRCNEXT_Msk )
+#define SPI_CR1_CRCEN_Pos    ( 13U )
+#define SPI_CR1_CRCEN_Msk    ( 0x1UL << SPI_CR1_CRCEN_Pos )
+#define SPI_CR1_CRCEN        ( SPI_CR1_CRCEN_Msk )
+#define SPI_CR1_BIDIOE_Pos   ( 14U )
+#define SPI_CR1_BIDIOE_Msk   ( 0x1UL << SPI_CR1_BIDIOE_Pos )
+#define SPI_CR1_BIDIOE       ( SPI_CR1_BIDIOE_Msk )
+#define SPI_CR1_BIDIMODE_Pos ( 15U )
+#define SPI_CR1_BIDIMODE_Msk ( 0x1UL << SPI_CR1_BIDIMODE_Pos )
+#define SPI_CR1_BIDIMODE     ( SPI_CR1_BIDIMODE_Msk )
+/* CR2 */
+#define SPI_CR2_RXDMAEN_Pos ( 0U )
+#define SPI_CR2_RXDMAEN_Msk ( 0x1UL << SPI_CR2_RXDMAEN_Pos )
+#define SPI_CR2_RXDMAEN     ( SPI_CR2_RXDMAEN_Msk )
+#define SPI_CR2_TXDMAEN_Pos ( 1U )
+#define SPI_CR2_TXDMAEN_Msk ( 0x1UL << SPI_CR2_TXDMAEN_Pos )
+#define SPI_CR2_TXDMAEN     ( SPI_CR2_TXDMAEN_Msk )
+#define SPI_CR2_SSOE_Pos    ( 2U )
+#define SPI_CR2_SSOE_Msk    ( 0x1UL << SPI_CR2_SSOE_Pos )
+#define SPI_CR2_SSOE        ( SPI_CR2_SSOE_Msk )
+// Note: 'NSS pulse mode' and 'TI mode' bits don't show up in
+// STM32F103 reference documents.
+#define SPI_CR2_NSSP_Pos    ( 3U )
+#define SPI_CR2_NSSP_Msk    ( 0x1UL << SPI_CR2_NSSP_Pos )
+#define SPI_CR2_NSSP        ( SPI_CR2_NSSP_Msk )
+#define SPI_CR2_TIMOD_Pos   ( 4U )
+#define SPI_CR2_TIMOD_Msk   ( 0x1UL << SPI_CR2_TIMOD_Pos )
+#define SPI_CR2_TIMOD       ( SPI_CR2_TIMOD_Msk )
+#define SPI_CR2_ERRIE_Pos   ( 5U )
+#define SPI_CR2_ERRIE_Msk   ( 0x1UL << SPI_CR2_ERRIE_Pos )
+#define SPI_CR2_ERRIE       ( SPI_CR2_ERRIE_Msk )
+#define SPI_CR2_RXNEIE_Pos  ( 6U )
+#define SPI_CR2_RXNEIE_Msk  ( 0x1UL << SPI_CR2_RXNEIE_Pos )
+#define SPI_CR2_RXNEIE      ( SPI_CR2_RXNEIE_Msk )
+#define SPI_CR2_TXEIE_Pos   ( 7U )
+#define SPI_CR2_TXEIE_Msk   ( 0x1UL << SPI_CR2_TXEIE_Pos )
+#define SPI_CR2_TXEIE       ( SPI_CR2_TXEIE_Msk )
+/* SR / STAT */
+#define SPI_SR_RXNE_Pos   ( 0U )
+#define SPI_SR_RXNE_Msk   ( 0x1UL << SPI_SR_RXNE_Pos )
+#define SPI_SR_RXNE       ( SPI_SR_RXNE_Msk )
+#define SPI_SR_TXE_Pos    ( 1U )
+#define SPI_SR_TXE_Msk    ( 0x1UL << SPI_SR_TXE_Pos )
+#define SPI_SR_TXE        ( SPI_SR_TXE_Msk )
+#define SPI_SR_CHSIDE_Pos ( 2U )
+#define SPI_SR_CHSIDE_Msk ( 0x1UL << SPI_SR_CHSIDE_Pos )
+#define SPI_SR_CHSIDE     ( SPI_SR_CHSIDE_Msk )
+#define SPI_SR_UDR_Pos    ( 3U )
+#define SPI_SR_UDR_Msk    ( 0x1UL << SPI_SR_UDR_Pos )
+#define SPI_SR_UDR        ( SPI_SR_UDR_Msk )
+#define SPI_SR_CRCERR_Pos ( 4U )
+#define SPI_SR_CRCERR_Msk ( 0x1UL << SPI_SR_CRCERR_Pos )
+#define SPI_SR_CRCERR     ( SPI_SR_CRCERR_Msk )
+#define SPI_SR_MODF_Pos   ( 5U )
+#define SPI_SR_MODF_Msk   ( 0x1UL << SPI_SR_MODF_Pos )
+#define SPI_SR_MODF       ( SPI_SR_MODF_Msk )
+#define SPI_SR_OVR_Pos    ( 6U )
+#define SPI_SR_OVR_Msk    ( 0x1UL << SPI_SR_OVR_Pos )
+#define SPI_SR_OVR        ( SPI_SR_OVR_Msk )
+#define SPI_SR_BSY_Pos    ( 7U )
+#define SPI_SR_BSY_Msk    ( 0x1UL << SPI_SR_BSY_Pos )
+#define SPI_SR_BSY        ( SPI_SR_BSY_Msk )
+// Note: "Format error" bit doesn't show up in STM32F1 documentation.
+#define SPI_SR_FERR_Pos   ( 8U )
+#define SPI_SR_FERR_Msk   ( 0x1UL << SPI_SR_FERR_Pos )
+#define SPI_SR_FERR       ( SPI_SR_FERR_Msk )
