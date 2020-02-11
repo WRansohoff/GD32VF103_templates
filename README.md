@@ -10,7 +10,7 @@ These boards include a common-anode RGB LED, with the cathodes connected to pins
 
 [Longan Nano Schematics](http://dl.sipeed.com/LONGAN/Nano/HDK/Longan%20Nano%202663/Longan%20nano%202663(Schematic).pdf)
 
-They also have a 160x80-pixel `ST7735` TFT display wired to one of its `SPI` peripherals, which is a nice little extra.
+They also have a 160x80-pixel `ST7735` TFT display wired to one of its `SPI` peripherals, which is a nice little extra. It seems to use the same sort of command set as `ILI9341` and `ILI9361C` displays.
 
 # Compiler Toolchain
 
@@ -31,7 +31,7 @@ cd build
 make
 ```
 
-You might need to install a few dependencies such as the `bison`, `flex`, and `texinfo` packages. If you're missing any, the `make` or `configure` commands will print out errors telling you what to install.
+You might need to install a few dependencies such as the `bison`, `flex`, and `texinfo` packages. If you're missing any, the `make` or `configure` commands will print out errors telling you what to install. There's also a list under the 'Prerequisites' section of the toolchain's Readme.
 
 Also, the `--prefix` argument is optional; it lets you specity an install directory, like `/opt/riscv-gcc` or `/home/user/riscv-gcc`. This makes it easier to uninstall later, but it also means that you'll need to add `[install directory]/bin` to your `PATH` environment variable in order to run programs like `riscv32-unknown-elf-gcc`.
 
@@ -57,7 +57,7 @@ Some configuration files, such as the OpenOCD files and the RISC-V equivalent of
 
 [GD32VF103 Firmware Library](https://github.com/riscv-mcu/GD32VF103_Firmware_Library)
 
-You can run `openocd -f openocd/openocd_ft2232.cfg` to open a debugging connection using the "Sipeed" USB/JTAG dongles which Seeed Studio sells alongside these boards, but I had to comment out the `ftdi_device_desc` setting to get OpenOCD to recognize mine. You'll also need to use a patched version of OpenOCD which can connect to and flash GD32VF103 chips:
+You can run `openocd -f openocd/openocd_ft2232.cfg` to open a debugging connection using the ["Sipeed" USB/JTAG dongles which Seeed Studio sells alongside these boards](https://www.seeedstudio.com/Sipeed-USB-JTAG-TTL-RISC-V-Debugger-p-2910.html), but I had to comment out the `ftdi_device_desc` setting to get OpenOCD to recognize mine. You'll also need to use a patched version of OpenOCD which can connect to and flash GD32VF103 chips:
 
 [GD32VF103-compatible RISC-V OpenOCD Fork](https://github.com/riscv-mcu/riscv-openocd)
 
