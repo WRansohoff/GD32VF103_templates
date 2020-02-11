@@ -213,7 +213,8 @@ int main( void ) {
   DMA1_Channel3->CCR |=  ( DMA_CCR_EN );
 
   // Cycle the display through a few patterns.
-  // For now, just solid colors...
+  // For now, just solid colors, and set the on-board
+  // LED to the current display color.
   #define PATTERN_DELAY ( 1000 )
   while( 1 ) {
     // TODO: Less code re-use. Also, the DMA transfer seems to send
@@ -223,26 +224,41 @@ int main( void ) {
     for ( uint32_t i = 0; i < TFT_A; ++i ) {
       fb[ i ] = 0x1F00;
     }
+    GPIOA->ODR |=  ( 0x1 << 1 |
+                     0x1 << 2 );
+    GPIOC->ODR &= ~( 0x1 << 13 );
     delay_ms( PATTERN_DELAY );
     // Yellow
     for ( uint32_t i = 0; i < TFT_A; ++i ) {
       fb[ i ] = 0xFF07;
     }
+    GPIOA->ODR &= ~( 0x1 << 1 );
+    GPIOA->ODR |=  ( 0x1 << 2 );
+    GPIOC->ODR &= ~( 0x1 << 13 );
     delay_ms( PATTERN_DELAY );
     // Green (6 middle bits)
     for ( uint32_t i = 0; i < TFT_A; ++i ) {
       fb[ i ] = 0xE007;
     }
+    GPIOA->ODR &= ~( 0x1 << 1 );
+    GPIOA->ODR |=  ( 0x1 << 2 );
+    GPIOC->ODR |=  ( 0x1 << 13 );
     delay_ms( PATTERN_DELAY );
     // Purple
     for ( uint32_t i = 0; i < TFT_A; ++i ) {
       fb[ i ] = 0x1FF8;
     }
+    GPIOA->ODR |=  ( 0x1 << 1 );
+    GPIOA->ODR &= ~( 0x1 << 2 );
+    GPIOC->ODR &= ~( 0x1 << 13 );
     delay_ms( PATTERN_DELAY );
     // Blue (5 least-significant bits)
     for ( uint32_t i = 0; i < TFT_A; ++i ) {
       fb[ i ] = 0x00F8;
     }
+    GPIOA->ODR |=  ( 0x1 << 1 );
+    GPIOA->ODR &= ~( 0x1 << 2 );
+    GPIOC->ODR |=  ( 0x1 << 13 );
     delay_ms( PATTERN_DELAY );
   }
   return 0;
