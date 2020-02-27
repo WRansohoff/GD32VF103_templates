@@ -1,3 +1,5 @@
+#ifndef GD32VF103xB
+#define GD32VF103xB
 /*
  * GD32VF103CB device header file.
  * Written to be as compatible as possible with STM32F1 code.
@@ -547,3 +549,5 @@ typedef struct
 #define SPI_SR_FERR_Pos   ( 8U )
 #define SPI_SR_FERR_Msk   ( 0x1UL << SPI_SR_FERR_Pos )
 #define SPI_SR_FERR       ( SPI_SR_FERR_Msk )
+
+#endif
